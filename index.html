@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Vue.js测试</title>
+	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/vue.js"></script>
+</head>
+<body>
+	<!--普通数据-->
+	<h2>普通数据</h2>
+	<div id="text">
+		{{msg}}
+	</div>
+
+	<!--列表-->
+	<h2>列表</h2>
+	<div id="list">
+		<ol>
+			<span v-if="loaded == false">正在加载数据...</span>
+			<span v-else-if="todolist.length == 0">暂无数据</span>
+			<template v-else>
+			<li v-for="(vo,i) in todolist">
+				<!-- <span v-if="vo.id == 1">这是第一个</span> -->
+				{{vo.name}} - {{vo.time}}
+				<button @click="del(i)">删除</button>
+			</li>
+			</template>
+		</ol>
+		<button @click="showData">载入数据</button>
+		<button @click="add">追加数据</button>
+	</div>
+
+	<script type="text/javascript">
+		//普通数据
+		var text = new Vue({
+			el:'#text',
+			data: {
+				msg:'Hello World!!'
+			}
+		});
+
+		//列表
+		var list = new Vue({
+			el:'#list',
+			data:{
+				/*todolist:[
+					{id:1,name:'测试1',time:'2018-12-04 20:52'},
+					{id:2,name:'测试2',time:'2018-12-04 20:52'}
+				],*/
+				todolist:[],
+				loaded:true
+			},
+			methods:{
+				//加载数据
+				showData:function(){
+					/*$.ajax({
+						url: "data.php",
+						success: function(data) {
+							list.todolist = data;
+							list.loaded = true;
+						}
+					});*/
+					this.loaded = false;
+					$.getJSON('data.php',function(data){
+						list.todolist = data;
+						list.loaded = true;
+					});
+				},
+				//追加列表数据
+				add: function(){
+					this.todolist.push({id:3,name:'测试3',time:'2018-12-04 20:52'});
+				},
+				//删除列表数据
+				del:function(index){
+					this.todolist.splice(index, 1)
+				}
+			}
+		});
+	</script>
+</body>
+</html>

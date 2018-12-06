@@ -2,15 +2,23 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Vue.js测试</title>
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="js/vue.js"></script>
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 <body>
+
 	<!--普通数据-->
 	<h2>普通数据</h2>
 	<div id="text">
-		{{msg}}
+		<el-container>
+			<el-header>Header</el-header>
+			<el-main>{{msg}}</el-main>
+		</el-container>
 	</div>
 
 	<!--列表-->
@@ -23,12 +31,18 @@
 			<li v-for="(vo,i) in todolist">
 				<!-- <span v-if="vo.id == 1">这是第一个</span> -->
 				{{vo.name}} - {{vo.time}}
-				<button @click="del(i)">删除</button>
+				<el-button type="info" size="mini" @click="del(i)">删除</el-button>
 			</li>
 			</template>
 		</ol>
-		<button @click="showData">载入数据</button>
-		<button @click="add">追加数据</button>
+		<el-button type="primary" size="medium" @click="showData">载入数据</el-button>
+		<el-button size="medium" @click="add">追加数据</el-button>
+	</div>
+
+	<!--按钮-->
+	<h2>弹出提示框</h2>
+	<div id="dialog">
+		<el-button @click="show">消息提示</el-button>
 	</div>
 
 	<script type="text/javascript">
@@ -63,6 +77,7 @@
 					});*/
 					this.loaded = false;
 					$.getJSON('data.php',function(data){
+						console.log(data);
 						list.todolist = data;
 						list.loaded = true;
 					});
@@ -74,6 +89,29 @@
 				//删除列表数据
 				del:function(index){
 					this.todolist.splice(index, 1)
+				}
+			}
+		});
+
+		//弹窗
+		var dialog = new Vue({
+			el:'#dialog',
+			data:{
+				visible:true
+			},
+			methods:{
+				//显示弹窗
+				show:function(){
+					// this.visible = true;
+					this.$alert('这是一段内容', '标题名称', {
+						confirmButtonText: '确定',
+						callback: action => {
+							this.$message({
+								type: 'info',
+								message: `action: ${ action }`
+							});
+						}
+					});
 				}
 			}
 		});
